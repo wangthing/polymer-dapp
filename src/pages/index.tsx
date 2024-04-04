@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import { useState } from "react";
+import Navbar from "@/components/navigation/navbar";
 
 export default function Home() {
 	const [isNetworkSwitchHighlighted, setIsNetworkSwitchHighlighted] =
@@ -25,6 +26,7 @@ export default function Home() {
 					content="width=device-width, initial-scale=1"
 				/>
 				<link rel="icon" href="/favicon.ico" />
+				<link href="./output.css" rel="stylesheet"></link>
 			</Head>
 			<header>
 				<div
@@ -37,16 +39,11 @@ export default function Home() {
 					}}
 				/>
 				<div className={styles.header}>
-					<div className={styles.logo}>
-						<Image
-							src="/logo.svg"
-							alt="WalletConnect Logo"
-							height="32"
-							width="203"
-						/>
-					</div>
+
+					<Navbar/>
+					
 					<div className={styles.buttons}>
-						<div
+						{/* <div
 							onClick={closeAll}
 							className={`${styles.highlight} ${
 								isNetworkSwitchHighlighted
@@ -55,7 +52,7 @@ export default function Home() {
 							}`}
 						>
 							<w3m-network-button />
-						</div>
+						</div> */}
 						<div
 							onClick={closeAll}
 							className={`${styles.highlight} ${
