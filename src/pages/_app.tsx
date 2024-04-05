@@ -6,16 +6,19 @@ import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import {
 	mainnet,
-	// baseSepolia,
-	// optimismSepolia,
-	// base,
-	// optimism
+	baseSepolia,
+	optimismSepolia,
+	base,
+	optimism
 } from "wagmi/chains";
 import { SiweMessage } from 'siwe'
 import { createSIWEConfig } from '@web3modal/siwe'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@web3modal/siwe'
 import { getCsrfToken, signIn, signOut, getSession, SessionProvider } from 'next-auth/react'
 import { Session } from "next-auth"
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+const queryClient = new QueryClient() 
 
 const siweConfig = createSIWEConfig({
 	createMessage: ({ nonce, address, chainId }: SIWECreateMessageArgs) =>
@@ -73,10 +76,10 @@ const siweConfig = createSIWEConfig({
 })
 const chains = [
 	mainnet,
-	// base,
-	// optimism,
-	// baseSepolia,
-	// optimismSepolia
+	base,
+	optimism,
+	baseSepolia,
+	optimismSepolia
 ];
 
 // 1. Get projectID at https://cloud.walletconnect.com
@@ -94,7 +97,7 @@ const wagmiConfig = defaultWagmiConfig({
 	projectId: projectId, 
 	chains: chains,
 	metadata: metadata,
-	// enableCoinbase: false,
+	enableCoinbase: false,
 	enableEmail: false,
 	enableWalletConnect: false,
 });
@@ -116,9 +119,11 @@ export default function App({ Component, pageProps }: AppProps<{session: Session
 		<>
 			{ready ? (
 				<WagmiProvider config={wagmiConfig}>
-					<SessionProvider session={pageProps.session}>
-						<Component {...pageProps} />
-					</SessionProvider>
+					<QueryClientProvider client={queryClient}> 
+						<SessionProvider session={pageProps.session}>
+							<Component {...pageProps} />
+						</SessionProvider>
+					</QueryClientProvider>
 				</WagmiProvider>
 
 			) : null}

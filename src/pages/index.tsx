@@ -3,6 +3,7 @@ import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import { useState } from "react";
 import Navbar from "@/components/navigation/navbar";
+import UserInfo from "@/components/UserInfo";
 
 export default function Home() {
 	const [isNetworkSwitchHighlighted, setIsNetworkSwitchHighlighted] =
@@ -70,6 +71,7 @@ export default function Home() {
 				<div className={styles.wrapper}>
 					<div className={styles.container}>
 						<h1>Hello World</h1>
+						<UserInfo />
 					</div>
 				</div>
 			</main>
