@@ -9,6 +9,7 @@
 	},
 	"dependencies": {
 		"@ant-design/web3-wagmi": "^2.4.1",
+		"@lucky-canvas/react": "^0.1.13",
 		"@tanstack/query-sync-storage-persister": "^5.28.13",
 		"@tanstack/react-query": "^5.28.14",
 		"@tanstack/react-query-persist-client": "^5.28.14",
