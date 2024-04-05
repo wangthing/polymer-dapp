@@ -1,19 +1,20 @@
 import "@/styles/globals.css";
-import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
-
-import { WagmiConfig } from "wagmi";
+import { createWeb3Modal } from "@web3modal/wagmi/react";
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { WagmiProvider } from "wagmi";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import {
-	baseSepolia,
-	optimismSepolia,
-	base,
-	optimism
+	mainnet,
+	// baseSepolia,
+	// optimismSepolia,
+	// base,
+	// optimism
 } from "wagmi/chains";
 import { SiweMessage } from 'siwe'
 import { createSIWEConfig } from '@web3modal/siwe'
-import { getCsrfToken, signIn, signOut, getSession, SessionProvider } from 'next-auth/react'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@web3modal/siwe'
+import { getCsrfToken, signIn, signOut, getSession, SessionProvider } from 'next-auth/react'
 import { Session } from "next-auth"
 
 const siweConfig = createSIWEConfig({
@@ -42,8 +43,7 @@ const siweConfig = createSIWEConfig({
 		}
 
 		const { address, chainId } = session as unknown as SIWESession
-
-		return { address, chainId }
+		return { address, chainId }	
 	},
 	verifyMessage: async ({ message, signature }: SIWEVerifyMessageArgs) => {
 		try {
@@ -72,10 +72,11 @@ const siweConfig = createSIWEConfig({
 	}
 })
 const chains = [
-	base,
-	optimism,
-	baseSepolia,
-	optimismSepolia
+	mainnet,
+	// base,
+	// optimism,
+	// baseSepolia,
+	// optimismSepolia
 ];
 
 // 1. Get projectID at https://cloud.walletconnect.com
@@ -91,15 +92,15 @@ const metadata = {
 
 const wagmiConfig = defaultWagmiConfig({ 
 	projectId: projectId, 
-	chains: chains , 
+	chains: chains,
 	metadata: metadata,
-	enableCoinbase: false,
+	// enableCoinbase: false,
 	enableEmail: false,
 	enableWalletConnect: false,
 });
 
 createWeb3Modal({
-	// siweConfig: siweConfig,
+	siweConfig: siweConfig,
 	wagmiConfig: wagmiConfig,
 	projectId,
 	chains: chains
@@ -114,11 +115,11 @@ export default function App({ Component, pageProps }: AppProps<{session: Session
 	return (
 		<>
 			{ready ? (
-				<WagmiConfig config={wagmiConfig}>
+				<WagmiProvider config={wagmiConfig}>
 					<SessionProvider session={pageProps.session}>
 						<Component {...pageProps} />
 					</SessionProvider>
-				</WagmiConfig>
+				</WagmiProvider>
 
 			) : null}
 		</>
