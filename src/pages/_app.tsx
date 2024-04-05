@@ -6,10 +6,10 @@ import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import {
 	mainnet,
-	// baseSepolia,
-	// optimismSepolia,
-	// base,
-	// optimism
+	baseSepolia,
+	optimismSepolia,
+	base,
+	optimism
 } from "wagmi/chains";
 import { SiweMessage } from 'siwe'
 import { createSIWEConfig } from '@web3modal/siwe'
@@ -73,10 +73,10 @@ const siweConfig = createSIWEConfig({
 })
 const chains = [
 	mainnet,
-	// base,
-	// optimism,
-	// baseSepolia,
-	// optimismSepolia
+	base,
+	optimism,
+	baseSepolia,
+	optimismSepolia
 ];
 
 // 1. Get projectID at https://cloud.walletconnect.com
