@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider, http, createConfig } from "wagmi";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import {
@@ -17,8 +17,8 @@ import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '
 import { getCsrfToken, signIn, signOut, getSession, SessionProvider } from 'next-auth/react'
 import { Session } from "next-auth"
 
+import { createClient } from 'viem'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-const queryClient = new QueryClient() 
 
 const siweConfig = createSIWEConfig({
 	createMessage: ({ nonce, address, chainId }: SIWECreateMessageArgs) =>
@@ -93,21 +93,33 @@ const metadata = {
 	icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
-const wagmiConfig = defaultWagmiConfig({ 
-	projectId: projectId, 
-	chains: [
-		// mainnet,
-		// base,
-		// optimism,
-		baseSepolia,
-		optimismSepolia
-	],
-	enableInjected: true,
-	metadata: metadata,
-	enableCoinbase: false,
-	enableEmail: false,
-	enableWalletConnect: false,
-});
+// Create wagmiConfig
+export const wagmiConfig = createConfig({
+  chains,
+  // transports: {
+  //   [mainnet.id]: http(),
+  //   [baseSepolia.id]: http(),
+  //   [optimismSepolia.id]: http(),
+  // },
+	client({ chain }) {
+    const res = createClient({ chain, transport: http() })
+		return res
+	}
+})
+
+const queryClient = new QueryClient() 
+
+
+// const wagmiConfig = defaultWagmiConfig({ 
+// 	projectId: projectId, 
+// 	chains: chains,
+// 	metadata: metadata,
+// 	enableCoinbase: false,
+// 	enableEmail: false,
+// 	enableWalletConnect: false,
+// });
+
+
 
 createWeb3Modal({
 	// siweConfig: siweConfig,
