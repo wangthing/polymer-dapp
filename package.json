@@ -8,8 +8,9 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@ant-design/web3-wagmi": "^2.4.1",
 		"@tanstack/query-sync-storage-persister": "^5.28.13",
-		"@tanstack/react-query": "^5.17.15",
+		"@tanstack/react-query": "^5.28.14",
 		"@tanstack/react-query-persist-client": "^5.28.14",
 		"@types/node": "20.12.3",
 		"@types/react": "18.2.74",
@@ -25,8 +26,8 @@
 		"react-dom": "18.2.0",
 		"siwe": "^2.1.4",
 		"typescript": "5.4.3",
-		"viem": "^2.0.6",
-		"wagmi": "^2.2.1"
+		"viem": "^2.9.9",
+		"wagmi": "^2.5.19"
 	},
 	"overrides": {
 		"@parcel/watcher": "2.1.0"

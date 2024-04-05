@@ -95,7 +95,14 @@ const metadata = {
 
 const wagmiConfig = defaultWagmiConfig({ 
 	projectId: projectId, 
-	chains: chains,
+	chains: [
+		// mainnet,
+		// base,
+		// optimism,
+		baseSepolia,
+		optimismSepolia
+	],
+	enableInjected: true,
 	metadata: metadata,
 	enableCoinbase: false,
 	enableEmail: false,
@@ -103,10 +110,13 @@ const wagmiConfig = defaultWagmiConfig({
 });
 
 createWeb3Modal({
-	siweConfig: siweConfig,
+	// siweConfig: siweConfig,
 	wagmiConfig: wagmiConfig,
 	projectId,
-	chains: chains
+	// chains: [
+	// 	baseSepolia,
+	// 	optimismSepolia
+	// ]
 });
 
 export default function App({ Component, pageProps }: AppProps<{session: Session}>) {
