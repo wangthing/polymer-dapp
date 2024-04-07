@@ -1,0 +1,11 @@
+.nftContainer {
+  .nftList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    .nftItem {
+      margin-right: 24px;
+      margin-bottom: 24px;
+    }
+  }
+} 

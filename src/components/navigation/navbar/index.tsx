@@ -1,30 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import styles from "@/styles/Home.module.css";
 import Image from "next/image";
 const Navbar = () => {
+
+  const [isNetworkSwitchHighlighted, setIsNetworkSwitchHighlighted] =
+		useState(false);
+	const [isConnectHighlighted, setIsConnectHighlighted] = useState(false);
+
+	const closeAll = () => {
+		setIsNetworkSwitchHighlighted(false);
+		setIsConnectHighlighted(false);
+	};
   return (
-    <>
-      <div className={styles.logo}>
-        <Image
-          src="/Logo-Dark.svg"
-          alt="Polymer Logo"
-          height="32"
-          width="203"
-        />
-      </div>
+      <header>
+				<div
+					className={styles.backdrop}
+					style={{
+						opacity:
+							isConnectHighlighted || isNetworkSwitchHighlighted
+								? 1
+								: 0,
+					}}
+				/>
+				<div className={styles.header}>
+					<Link href="/" className="text-xl font-bold">
+						<div className={styles.logo}>
+							<Image
+								src="/Logo-Dark.svg"
+								alt="Polymer Logo"
+								height="32"
+								width="203"
+							/>
+						</div>
+          </Link>
 
-      <Link href="/pts" className="text-xl font-bold">
-        <p>Earn Pts</p>
-      </Link>
 
-      <Link href="/nfts" className="text-xl font-bold">
-        <p>Operate NFTs</p>
-      </Link>
-      <Link href="/leaderboard" className="text-xl font-bold">
-        <p>Leaderboard</p>
-      </Link>
-    </>
+          <Link href="/pts" className="text-xl font-bold">
+            <p>Earn Pts</p>
+          </Link>
+
+          <Link href="/nfts" className="text-xl font-bold">
+            <p>Operate NFTs</p>
+          </Link>
+          <Link href="/leaderboard" className="text-xl font-bold">
+            <p>Leaderboard</p>
+          </Link>
+					
+					<div className={styles.buttons}>
+						{/* <div
+							onClick={closeAll}
+							className={`${styles.highlight} ${
+								isNetworkSwitchHighlighted
+									? styles.highlightSelected
+									: ``
+							}`}
+						>
+							<w3m-network-button />
+						</div> */}
+						<div
+							onClick={closeAll}
+							className={`${styles.highlight} ${
+								isConnectHighlighted
+									? styles.highlightSelected
+									: ``
+							}`}
+						>
+							<w3m-button />
+						</div>
+					</div>
+				</div>
+			</header>
   );
 };
 
