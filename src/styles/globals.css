@@ -74,6 +74,13 @@ li {
 }
 
 header {
+	background: #0a0e01;
 	position: fixed;
+	top: 0;
+	z-index: 999999;
 	width: 100%;
+}
+
+footer {
+	text-align: center;
 }

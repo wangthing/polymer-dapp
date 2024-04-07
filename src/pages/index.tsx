@@ -4,6 +4,7 @@ import styles from "@/styles/Home.module.css";
 import { useState } from "react";
 import Navbar from "@/components/navigation/navbar";
 import UserInfo from "@/components/UserInfo";
+import Layout from "@/components/Layout";
 
 export default function Home() {
 	const [isNetworkSwitchHighlighted, setIsNetworkSwitchHighlighted] =
@@ -29,52 +30,16 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 				<link href="./output.css" rel="stylesheet"></link>
 			</Head>
-			<header>
-				<div
-					className={styles.backdrop}
-					style={{
-						opacity:
-							isConnectHighlighted || isNetworkSwitchHighlighted
-								? 1
-								: 0,
-					}}
-				/>
-				<div className={styles.header}>
-
-					<Navbar/>
-					
-					<div className={styles.buttons}>
-						{/* <div
-							onClick={closeAll}
-							className={`${styles.highlight} ${
-								isNetworkSwitchHighlighted
-									? styles.highlightSelected
-									: ``
-							}`}
-						>
-							<w3m-network-button />
-						</div> */}
-						<div
-							onClick={closeAll}
-							className={`${styles.highlight} ${
-								isConnectHighlighted
-									? styles.highlightSelected
-									: ``
-							}`}
-						>
-							<w3m-button />
+			<Layout>
+				<main className={styles.main}>
+					<div className={styles.wrapper}>
+						<div className={styles.container}>
+							<h1>Hello World</h1>
+							<UserInfo />
 						</div>
 					</div>
-				</div>
-			</header>
-			<main className={styles.main}>
-				<div className={styles.wrapper}>
-					<div className={styles.container}>
-						<h1>Hello World</h1>
-						<UserInfo />
-					</div>
-				</div>
-			</main>
+				</main>
+			</Layout>
 		</>
 	);
 }

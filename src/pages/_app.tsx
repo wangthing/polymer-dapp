@@ -74,13 +74,9 @@ const siweConfig = createSIWEConfig({
 		}
 	}
 })
-optimismSepolia.rpcUrls = {
-	...optimismSepolia.rpcUrls,
-	test1: {
-		http: [''],
-		webSocket: ['']
-	}
-}
+// optimismSepolia.rpcUrls = {
+// 	...optimismSepolia.rpcUrls,
+// }
 const chains = [
 	mainnet,
 	base,

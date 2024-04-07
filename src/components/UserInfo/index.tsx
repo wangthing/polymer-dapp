@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { type BaseError, useWaitForTransactionReceipt, useWriteContract, useWatchContractEvent } from 'wagmi'
-import { watchContractEvent,  http, createConfig  } from '@wagmi/core'
+import { type BaseError, useWaitForTransactionReceipt, useWriteContract, useWatchContractEvent, useConfig, useSwitchChain } from 'wagmi'
+import { watchContractEvent,  http, createConfig } from '@wagmi/core'
 import { baseSepolia, optimismSepolia } from '@wagmi/core/chains'
 import styles from "@/styles/Home.module.css";
 
 // import { WriteContractVariables } from "wagmi/query";
 import { LuckyWheel } from '@lucky-canvas/react'
+import { CryptoCards, Button, NftCard } from '@web3uikit/core';
 
 const contract_address = '0xda9996d80EFdaE2C30B3036C47E2A5617F8BA8Ca'
 export function UserInfo() {
@@ -17,8 +18,11 @@ export function UserInfo() {
     isPending,
     writeContract
   } = useWriteContract()
+  const config = useConfig()
+  const { chains, switchChain } = useSwitchChain()
 
   useEffect(() => {
+    // TODO: try to replace createConfig with config returned by useConfig
     const unwatch = (watchContractEvent as any)((createConfig as any)({
       chains: [baseSepolia, optimismSepolia ],
       transports: {
@@ -104,20 +108,22 @@ export function UserInfo() {
   ])
   const myLucky = useRef()
   return (
-    <button onClick={submit} className={styles.button}>
-      <button
-        disabled={isPending}
-        type="submit"
-      >
-        {isPending ? 'Confirming...' : 'Mint'}
-      </button>
-      {hash && <div>Transaction Hash: {hash}</div>}
-      {isConfirming && <div>Waiting for confirmation...</div>}
-      {isConfirmed && <div>Transaction confirmed. data: {hash}</div>}
-      {error && (
-        <div>Error: {(error as BaseError).details || error.stack}</div>
-      )}
+    <div>
+      <button onClick={submit} className={styles.button}>
+        <button
+          disabled={isPending}
+          type="submit"
+        >
+          {isPending ? 'Confirming...' : 'Mint'}
+        </button>
+        {hash && <div>Transaction Hash: {hash}</div>}
+        {isConfirming && <div>Waiting for confirmation...</div>}
+        {isConfirmed && <div>Transaction confirmed. data: {hash}</div>}
+        {error && (
+          <div>Error: {(error as BaseError).details || error.stack}</div>
+        )}
 
+      </button>
       <LuckyWheel width="300px" height="300px"
         ref={myLucky} 
         blocks={blocks}
@@ -141,7 +147,11 @@ export function UserInfo() {
             myLucky?.current.stop(index)
           }, 2500)
         }}>Start</p>
-    </button>
+
+      <>
+        <Button theme="primary" type="button" text="Launch Dapp" />
+      </>
+    </div>
   )
 }
 
