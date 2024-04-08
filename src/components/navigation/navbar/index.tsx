@@ -36,14 +36,14 @@ const Navbar = () => {
           </Link>
 
 
-          <Link href="/pts" className="text-xl font-bold">
+          <Link href="/points" className="text-xl font-bold">
             <p>Earn Pts</p>
           </Link>
 
           <Link href="/nfts" className="text-xl font-bold">
             <p>Operate NFTs</p>
           </Link>
-          <Link href="/leaderboard" className="text-xl font-bold">
+          <Link href="/leader-board" className="text-xl font-bold">
             <p>Leaderboard</p>
           </Link>
 					

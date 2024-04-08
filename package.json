@@ -20,6 +20,7 @@
 		"@web3uikit/core": "^1.1.5",
 		"@web3uikit/icons": "^1.1.2",
 		"@web3uikit/web3": "^0.3.2",
+		"classnames": "^2.5.1",
 		"css-loader": "^7.0.0",
 		"eslint": "8.56.0",
 		"eslint-config-next": "13.5.6",
