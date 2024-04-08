@@ -1,17 +1,21 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { type BaseError, useWaitForTransactionReceipt, useWriteContract, useWatchContractEvent, useConfig, useSwitchChain } from 'wagmi'
-import { watchContractEvent,  http, createConfig } from '@wagmi/core'
+import { type BaseError, useWaitForTransactionReceipt, useWriteContract, useWatchContractEvent, useConfig } from 'wagmi'
+import { watchContractEvent,  http, readContract } from '@wagmi/core'
 import { baseSepolia, optimismSepolia } from '@wagmi/core/chains'
 import styles from "@/styles/Home.module.css";
 
 // import { WriteContractVariables } from "wagmi/query";
 import { LuckyWheel } from '@lucky-canvas/react'
-import { CryptoCards, Button, NftCard } from '@web3uikit/core';
+import { Button, NftCard } from '@web3uikit/core';
+import abi from '@/abis/points.json'
+import { WriteContractReturnType } from "viem";
+// import { readContract } from "viem/actions";
 
-const contract_address = '0xda9996d80EFdaE2C30B3036C47E2A5617F8BA8Ca'
+const contract_address = '0xfda75cbf5517260417B8bEF47B74F4553C53924E'
 export function UserInfo() {
+  const myLucky = useRef()
   const {
     data: hash,
     error,
@@ -19,17 +23,10 @@ export function UserInfo() {
     writeContract
   } = useWriteContract()
   const config = useConfig()
-  const { chains, switchChain } = useSwitchChain()
 
   useEffect(() => {
     // TODO: try to replace createConfig with config returned by useConfig
-    const unwatch = (watchContractEvent as any)((createConfig as any)({
-      chains: [baseSepolia, optimismSepolia ],
-      transports: {
-        [baseSepolia.id]: http(),
-        [optimismSepolia.id]: http(),
-      },
-    }), {
+    const unwatch = (watchContractEvent as any)(config, {
       address: contract_address,
       abi: [{
         "anonymous": false,
@@ -53,6 +50,11 @@ export function UserInfo() {
       eventName: 'PointsAdded',
       onLogs(logs:any) {
         console.log('New logs!', logs)
+        if(logs.length) {
+          const { args } = logs[0]
+          const res = parseInt(args?.amount)
+          startWheel(res)
+        }
         unwatch()
       },
     })
@@ -61,22 +63,71 @@ export function UserInfo() {
     }
   }, [])
 
+  const startWheel = (index: number) => {
+    setTimeout(() => {
+      myLucky?.current?.stop(index)
+    }, 2500)
+  }
 
-  const submit = () => {
+  const canMint = async () => {
+    const res = await (readContract as any)(config, {
+      address: contract_address,
+      abi: [{
+        "inputs": [],
+        "name": "_canFunMint",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      }],
+      functionName: '_canFunMint',
+      args: []
+    })
+
+    return res
+  }
+
+  const submit = async () => {
+    const flag = await canMint();
+    console.log(flag, 'can mint?')
+    if(!flag) {
+      console.log("you can't mint now")
+      return
+    }
     (writeContract as any)(
       {
         address: contract_address,
         abi: [
           {
-            inputs: [],
-            name: 'funMint',
-            outputs: [],
-            stateMutability: 'nonpayable',
-            type: 'function'
+            "inputs": [],
+            "name": "funMint",
+            "outputs": [
+              {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
           },
         ],
         functionName: 'funMint',
         args: [],
+      },
+      {
+        onSuccess: (data: WriteContractReturnType, variables: any, context: any) => {
+          myLucky?.current?.play()
+          console.log(data, variables, context)
+        },
+        onError: (err: WriteContractReturnType) => {
+          console.log(err)
+        },
       }
     )
   }
@@ -85,14 +136,13 @@ export function UserInfo() {
       hash,
     })
 
-
   const [prizes] = useState([
-    { background: '#e9e8fe', fonts: [{ text: '1BTC', top: '20px' }], range: 100 },
-    { background: '#b8c5f2', fonts: [{ text: '1ETH', top: '20px' }], range: 0  },
-    { background: '#e9e8fe', fonts: [{ text: '1BNB', top: '20px' }], range: 0  },
-    { background: '#b8c5f2', fonts: [{ text: '1SOL', top: '20px' }], range: 0  },
-    { background: '#e9e8fe', fonts: [{ text: '1DOT', top: '20px' }], range: 0  },
-    { background: '#b8c5f2', fonts: [{ text: '1USDT', top: '20px' }], range: 0  },
+    { background: '#e9e8fe', fonts: [{ text: '1BTC', top: '20px' }], id: 1 },
+    { background: '#b8c5f2', fonts: [{ text: '1ETH', top: '20px' }], id: 2  },
+    { background: '#e9e8fe', fonts: [{ text: '1BNB', top: '20px' }], id: 3  },
+    { background: '#b8c5f2', fonts: [{ text: '1SOL', top: '20px' }], id: 4 },
+    { background: '#e9e8fe', fonts: [{ text: '1DOT', top: '20px' }], id: 5  },
+    { background: '#b8c5f2', fonts: [{ text: '1USDT', top: '20px' }], id: 6  },
   ])
   const [buttons] = useState([
     { radius: '40%', background: '#617df2' },
@@ -106,36 +156,27 @@ export function UserInfo() {
   const [blocks] = useState([
     { padding: '10px', background: '#869cfa' }
   ])
-  const myLucky = useRef()
+
   return (
     <div>
-      <button onClick={submit} className={styles.button}>
-        <button
+        <Button
           disabled={isPending}
           type="submit"
+          onClick={submit}
+          text={isPending ? 'Confirming...' : 'Mint'}
         >
-          {isPending ? 'Confirming...' : 'Mint'}
-        </button>
+        </Button>
         {hash && <div>Transaction Hash: {hash}</div>}
         {isConfirming && <div>Waiting for confirmation...</div>}
         {isConfirmed && <div>Transaction confirmed. data: {hash}</div>}
         {error && (
           <div>Error: {(error as BaseError).details || error.stack}</div>
         )}
-
-      </button>
       <LuckyWheel width="300px" height="300px"
         ref={myLucky} 
         blocks={blocks}
         prizes={prizes}
         buttons={buttons}
-        onStart={() => { // 点击抽奖按钮会触发star回调
-          myLucky?.current.play()
-          setTimeout(() => {
-            
-            myLucky?.current.stop()
-          }, 2500)
-        }}
         onEnd={prize => { // 抽奖结束会触发end回调
           alert('恭喜你抽到 ' + prize.fonts[0].text + ' 号奖品')
         }}
@@ -147,10 +188,6 @@ export function UserInfo() {
             myLucky?.current.stop(index)
           }, 2500)
         }}>Start</p>
-
-      <>
-        <Button theme="primary" type="button" text="Launch Dapp" />
-      </>
     </div>
   )
 }
