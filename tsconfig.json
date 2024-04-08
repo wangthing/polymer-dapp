@@ -17,7 +17,8 @@
 		"incremental": true,
 		// "loader": {test: /\.json$/, loader: "json", include: "path/to/your/sources"},
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@public/*": ["./public/*"],
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

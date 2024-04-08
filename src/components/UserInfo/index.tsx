@@ -3,8 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { type BaseError, useWaitForTransactionReceipt, useWriteContract, useWatchContractEvent, useConfig, useAccount } from 'wagmi'
 import { watchContractEvent,  http, readContract } from '@wagmi/core'
-import { baseSepolia, optimismSepolia } from '@wagmi/core/chains'
-import styles from "@/styles/Home.module.css";
 
 // import { WriteContractVariables } from "wagmi/query";
 import { LuckyWheel } from '@lucky-canvas/react'

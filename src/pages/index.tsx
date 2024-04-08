@@ -1,7 +1,8 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
-import UserInfo from "@/components/UserInfo";
+import styles from "@/styles/Home.module.scss";
 import Layout from "@/components/Layout";
+import Image from "next/image";
+import { Button } from "@web3uikit/core";
 
 export default function Home() {
 	return (
@@ -19,12 +20,40 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 				<link href="./output.css" rel="stylesheet"></link>
 			</Head>
-			<Layout>
+			<Layout hideHeader={true}>
 				<main className={styles.main}>
-					<div className={styles.wrapper}>
-						<div className={styles.container}>
-							<h1>Hello World</h1>
-							<UserInfo />
+					<div className={styles.baseInfo}>
+						<Image src="/images/asset-1-bc8cf690.webp" width={215} height={580} alt=''/>
+						<div className={styles.info}>
+								<h2 className={styles.title}>Get started with MetaMask Portfolio</h2>
+								<p className={styles.desc}>Get a clear, comprehensive view of your accounts and wallets, across all networks. 
+									Connect a MetaMask wallet or watch any Ethereum address.
+								</p>
+								<div className={styles.action}>
+									<Button text="Watch an Address" type="button" theme="outline" size="large"/>
+									<Button text="Connect Wallet" type="button" theme="moneyPrimary" size="large"/>
+								</div>
+						</div>
+						<Image src="/images/asset-2-167109cd.webp" width={215} height={580} alt=''/>
+					</div>
+					<div className={styles.routeList}>
+						<div className={styles.routeItem}>
+							<Image src="/images/factory-46c54889.webp" width={215} height={580} alt=''/>
+							<h2 className={styles.title}>Easily on-ramp or off-ramp</h2>
+							<p className={styles.desc}>Convert cash to crypto or crypto for cash while maintaining control of your assets, no centralized exchange necessary.</p>
+							<Button text="Connect Wallet" type="button" theme="moneyPrimary" size="large"/>
+						</div>
+						<div className={styles.routeItem}>
+							<Image src="/images/factory-46c54889.webp" width={215} height={580} alt=''/>
+							<h2 className={styles.title}>Easily on-ramp or off-ramp</h2>
+							<p className={styles.desc}>Convert cash to crypto or crypto for cash while maintaining control of your assets, no centralized exchange necessary.</p>
+							<Button text="Connect Wallet" type="button" theme="moneyPrimary" size="large"/>
+						</div>
+						<div className={styles.routeItem}>
+							<Image src="/images/factory-46c54889.webp" width={215} height={580} alt=''/>
+							<h2 className={styles.title}>Easily on-ramp or off-ramp</h2>
+							<p className={styles.desc}>Convert cash to crypto or crypto for cash while maintaining control of your assets, no centralized exchange necessary.</p>
+							<Button text="Connect Wallet" type="button" theme="moneyPrimary" size="large"/>
 						</div>
 					</div>
 				</main>

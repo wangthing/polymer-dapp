@@ -1,5 +1,5 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
+import styles from "@/styles/Home.module.scss";
 import UserInfo from "@/components/UserInfo";
 import Layout from "@/components/Layout";
 
