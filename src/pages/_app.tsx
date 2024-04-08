@@ -19,6 +19,7 @@ import { Session } from "next-auth"
 
 import { createClient } from 'viem'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { NotificationProvider } from '@web3uikit/core';
 
 const siweConfig = createSIWEConfig({
 	createMessage: ({ nonce, address, chainId }: SIWECreateMessageArgs) =>
@@ -146,7 +147,9 @@ export default function App({ Component, pageProps }: AppProps<{session: Session
 				<WagmiProvider config={wagmiConfig}>
 					<QueryClientProvider client={queryClient}> 
 						<SessionProvider session={pageProps.session}>
-							<Component {...pageProps} />
+    						<NotificationProvider>
+								<Component {...pageProps} />
+							</NotificationProvider>
 						</SessionProvider>
 					</QueryClientProvider>
 				</WagmiProvider>
