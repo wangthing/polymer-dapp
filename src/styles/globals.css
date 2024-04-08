@@ -77,7 +77,7 @@ header {
 	background: #0a0e01;
 	position: fixed;
 	top: 0;
-	z-index: 999999;
+	z-index: 9;
 	width: 100%;
 }
 

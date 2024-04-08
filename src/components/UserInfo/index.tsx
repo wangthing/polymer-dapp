@@ -1,21 +1,22 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { type BaseError, useWaitForTransactionReceipt, useWriteContract, useWatchContractEvent, useConfig } from 'wagmi'
+import { type BaseError, useWaitForTransactionReceipt, useWriteContract, useWatchContractEvent, useConfig, useAccount } from 'wagmi'
 import { watchContractEvent,  http, readContract } from '@wagmi/core'
 import { baseSepolia, optimismSepolia } from '@wagmi/core/chains'
 import styles from "@/styles/Home.module.css";
 
 // import { WriteContractVariables } from "wagmi/query";
 import { LuckyWheel } from '@lucky-canvas/react'
-import { Button, NftCard } from '@web3uikit/core';
+import { Button, useNotification } from '@web3uikit/core';
 import abi from '@/abis/points.json'
 import { WriteContractReturnType } from "viem";
-// import { readContract } from "viem/actions";
 
-const contract_address = '0xfda75cbf5517260417B8bEF47B74F4553C53924E'
+const contract_address = '0x52Ed35b6d22096f8BDe36AB15d41b7626d20a2fe'
 export function UserInfo() {
   const myLucky = useRef()
+  const account = useAccount()
+  const dispatch = useNotification();
   const {
     data: hash,
     error,
@@ -25,7 +26,6 @@ export function UserInfo() {
   const config = useConfig()
 
   useEffect(() => {
-    // TODO: try to replace createConfig with config returned by useConfig
     const unwatch = (watchContractEvent as any)(config, {
       address: contract_address,
       abi: [{
@@ -73,7 +73,13 @@ export function UserInfo() {
     const res = await (readContract as any)(config, {
       address: contract_address,
       abi: [{
-        "inputs": [],
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          }
+        ],
         "name": "_canFunMint",
         "outputs": [
           {
@@ -86,9 +92,8 @@ export function UserInfo() {
         "type": "function"
       }],
       functionName: '_canFunMint',
-      args: []
+      args: [account.address]
     })
-
     return res
   }
 
@@ -96,7 +101,12 @@ export function UserInfo() {
     const flag = await canMint();
     console.log(flag, 'can mint?')
     if(!flag) {
-      console.log("you can't mint now")
+      dispatch({
+        type: 'error',
+        message: "You can only fun mint once every 10min",
+        title: 'New Notification',
+        position: 'topR',
+      })
       return
     }
     (writeContract as any)(
@@ -122,7 +132,13 @@ export function UserInfo() {
       },
       {
         onSuccess: (data: WriteContractReturnType, variables: any, context: any) => {
-          myLucky?.current?.play()
+          myLucky?.current?.play();
+          dispatch({
+            type: 'info',
+            message: "minting in progress",
+            title: 'New Notification',
+            position: 'topR',
+          })
           console.log(data, variables, context)
         },
         onError: (err: WriteContractReturnType) => {
@@ -143,6 +159,10 @@ export function UserInfo() {
     { background: '#b8c5f2', fonts: [{ text: '1SOL', top: '20px' }], id: 4 },
     { background: '#e9e8fe', fonts: [{ text: '1DOT', top: '20px' }], id: 5  },
     { background: '#b8c5f2', fonts: [{ text: '1USDT', top: '20px' }], id: 6  },
+    { background: '#e9e8fe', fonts: [{ text: '1BNB', top: '20px' }], id: 7  },
+    { background: '#b8c5f2', fonts: [{ text: '1SOL', top: '20px' }], id: 8 },
+    { background: '#e9e8fe', fonts: [{ text: '1DOT', top: '20px' }], id: 9  },
+    { background: '#b8c5f2', fonts: [{ text: '1USDT', top: '20px' }], id: 10  },
   ])
   const [buttons] = useState([
     { radius: '40%', background: '#617df2' },
@@ -178,7 +198,12 @@ export function UserInfo() {
         prizes={prizes}
         buttons={buttons}
         onEnd={prize => { // 抽奖结束会触发end回调
-          alert('恭喜你抽到 ' + prize.fonts[0].text + ' 号奖品')
+          dispatch({
+            type: 'info',
+            message: '恭喜你抽到 ' + prize.fonts[0].text + ' 号奖品',
+            title: 'New Notification',
+            position: 'topR',
+          })
         }}
       />
       <p onClick={() => { // 点击抽奖按钮会触发star回调
