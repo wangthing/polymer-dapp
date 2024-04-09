@@ -8,10 +8,11 @@ import { watchContractEvent, readContract } from '@wagmi/core'
 import { LuckyWheel } from '@lucky-canvas/react'
 import { Button, useNotification } from '@web3uikit/core';
 import abi from '@/abis/points.json'
+import nftAbi from '@/abis/nft.json'
 import { WriteContractReturnType } from "viem";
+import { pts_contract_address as contract_address, nft_contract_address, pointList } from "@/const";
+import styles from './index.module.scss'
 
-const contract_address = '0xb9c85639C4599c497861A99BC0fb68C0EA4D05ed'
-const nft_contract_address = '0x4bBBd95EDb8fFBb0da4e9d4A930d09fd102A9A27'
 export function UserInfo() {
   const myLucky = useRef()
   const account = useAccount()
@@ -62,19 +63,20 @@ export function UserInfo() {
     }
   }, [])
 
-  const startWheel = (index: number) => {
+  const startWheel = (point: number) => {
     setTimeout(() => {
+      const index = pointList.findIndex(item => item.id === point)
       myLucky?.current?.stop(index)
     }, 2500)
   }
 
   const approve = async () => {
-    const approveAmount = Number.MAX_VALUE
+    const approveAmount = '999999999999999999999999999'
     const res = await (writeContract as any)({
       address: contract_address,
       abi,
       functionName: 'approve',
-      args: [contract_address, approveAmount]
+      args: [nft_contract_address, approveAmount]
     },
     {
       onSuccess: (data: WriteContractReturnType, variables: any, context: any) => {
@@ -99,7 +101,7 @@ export function UserInfo() {
       address: contract_address,
       abi,
       functionName: 'allowance',
-      args: [account.address, contract_address]
+      args: [account.address, nft_contract_address]
     })
     const allowance = parseInt(res)
     console.log('allowance>>>', res)
@@ -121,7 +123,7 @@ export function UserInfo() {
     return res
   }
 
-  const submit = async () => {
+  const startMint = async () => {
     const flag = await canMint();
     console.log(flag, 'can mint?')
     if(!flag) {
@@ -173,7 +175,27 @@ export function UserInfo() {
   }
 
   const mintNft = async () => {
-
+    const res = await (writeContract as any)({
+      address: nft_contract_address,
+      abi: nftAbi,
+      functionName: 'mintNFT1',
+      args: [account.address]
+    },
+    {
+      onSuccess: (data: WriteContractReturnType) => {
+        dispatch({
+          type: 'info',
+          message: "minting in progress",
+          title: 'New Notification',
+          position: 'topR',
+        })
+        console.log(data, 'mintNft1')
+      },
+      onError: (err: WriteContractReturnType) => {
+        console.log(err, 'mintNft1 failed')
+      },
+    })
+    console.log(res, 'mintNft1 res')
   }
 
   const randomMintNft = async () => {
@@ -205,18 +227,7 @@ export function UserInfo() {
       hash,
     })
 
-  const [prizes] = useState([
-    { background: '#e9e8fe', fonts: [{ text: '1BTC', top: '20px' }], id: 1 },
-    { background: '#b8c5f2', fonts: [{ text: '1ETH', top: '20px' }], id: 2  },
-    { background: '#e9e8fe', fonts: [{ text: '1BNB', top: '20px' }], id: 3  },
-    { background: '#b8c5f2', fonts: [{ text: '1SOL', top: '20px' }], id: 4 },
-    { background: '#e9e8fe', fonts: [{ text: '1DOT', top: '20px' }], id: 5  },
-    { background: '#b8c5f2', fonts: [{ text: '1USDT', top: '20px' }], id: 6  },
-    { background: '#e9e8fe', fonts: [{ text: '1BNB', top: '20px' }], id: 7  },
-    { background: '#b8c5f2', fonts: [{ text: '1SOL', top: '20px' }], id: 8 },
-    { background: '#e9e8fe', fonts: [{ text: '1DOT', top: '20px' }], id: 9  },
-    { background: '#b8c5f2', fonts: [{ text: '1USDT', top: '20px' }], id: 10  },
-  ])
+  const [prizes] = useState(pointList)
   const [buttons] = useState([
     { radius: '40%', background: '#617df2' },
     { radius: '35%', background: '#afc8ff' },
@@ -231,51 +242,50 @@ export function UserInfo() {
   ])
 
   return (
-    <div>
+    <div className={styles.funMint}>
+        <LuckyWheel width="300px" height="300px"
+          ref={myLucky} 
+          blocks={blocks}
+          prizes={prizes}
+          buttons={buttons}
+          onEnd={(prize: any)  => { // 抽奖结束会触发end回调
+            dispatch({
+              type: 'info',
+              message: '恭喜你抽到 ' + prize.fonts[0].text + ' 号奖品',
+              title: 'New Notification',
+              position: 'topR',
+            })
+          }}
+          onStart={startMint}
+        />
         <Button
           disabled={isPending}
           type="button"
           theme="primary"
-          onClick={submit}
+          onClick={startMint}
           text={isPending ? 'Confirming...' : 'funMint'}
-        >
-        </Button>
-        {hash && <div>Transaction Hash: {hash}</div>}
+          style={{marginTop: '32px'}}
+        />
+        {/* {hash && <div>Transaction Hash: {hash}</div>}
         {isConfirming && <div>Waiting for confirmation...</div>}
         {isConfirmed && <div>Transaction confirmed. data: {hash}</div>}
         {error && (
           <div>Error: {(error as BaseError).details || error.stack}</div>
-        )}
-
-        <Button
+        )} */}
+        {/* <Button
           disabled={isPending}
           type="button"
           theme="primary"
           onClick={mintNft}
           text={isPending ? 'Confirming...' : 'nft Mint'}
-        >
-        </Button>
+        />
         <Button
           disabled={isPending}
           type="button"
           theme="primary"
           onClick={randomMintNft}
           text={isPending ? 'Confirming...' : 'random nft Mint'}
-        >
-        </Button>
-      {/* <LuckyWheel width="300px" height="300px"
-        ref={myLucky} 
-        blocks={blocks}
-        prizes={prizes}
-        buttons={buttons}
-        onEnd={prize => { // 抽奖结束会触发end回调
-          dispatch({
-            type: 'info',
-            message: '恭喜你抽到 ' + prize.fonts[0].text + ' 号奖品',
-            title: 'New Notification',
-            position: 'topR',
-          })
-        }} */}
+        /> */}
     </div>
   )
 }

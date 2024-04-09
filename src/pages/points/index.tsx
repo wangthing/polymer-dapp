@@ -1,6 +1,6 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.scss";
-import UserInfo from "@/components/UserInfo";
+import UserInfo from "@/components/FunMint";
 import Layout from "@/components/Layout";
 
 export default function Home() {
@@ -23,7 +23,6 @@ export default function Home() {
 				<main className={styles.main}>
 					<div className={styles.wrapper}>
 						<div className={styles.container}>
-							<h1>Hello World</h1>
 							<UserInfo />
 						</div>
 					</div>

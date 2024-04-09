@@ -20,8 +20,12 @@ const demoData = [{
   "contract_type": "ERC721",
   "name": "BoredApeYachtClub",
   "symbol": "BAYC",
-  "token_uri": "https://ipfs.moralis.io:2053/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/4789",
-  "metadata": "{\"image\":\"ipfs://QmZcRZu2cMJG9KUSta6WTrRek647WSG5mJZLhimwbC2y56\",\"attributes\":[{\"trait_type\":\"Background\",\"value\":\"Aquamarine\"},{\"trait_type\":\"Fur\",\"value\":\"Pink\"},{\"trait_type\":\"Eyes\",\"value\":\"3d\"},{\"trait_type\":\"Mouth\",\"value\":\"Bored\"},{\"trait_type\":\"Clothes\",\"value\":\"Service\"}]}",
+  "token_uri": "https://gateway.ipfsscan.io/ipfs/QmZu7WiiKyytxwwKSwr6iPT1wqCRdgpqQNhoKUyn1CkMD3",
+  "metadata": JSON.stringify({
+    "name": "Polymer Challenge 4 NFT",
+    "description": "Polymer Incentivized Testnet Challenge 4 NFT",
+    "image": "https://emerald-uncertain-cattle-112.mypinata.cloud/ipfs/QmNUWSdgDUx6WXD5BKycUXUbimm6JZkNyENxXbAUiqLAG6"
+}),
   "last_token_uri_sync": "2022-10-04T14:49:59.308Z",
   "last_metadata_sync": "2022-10-04T14:50:00.573Z",
   "minter_address": "0x8be13ff71224ad525f0474553aa7f8621b856bd4"
@@ -78,7 +82,14 @@ export default function NFT() {
   <Layout>
     <div className={styles.nftContainer}>
       <div className={styles.nftList}>
-        {[...demoData,...demoData,...demoData].map(nft => <NftCard className={styles.nftItem} moralisApiResult={nft} chain={currentChain?.name || ''}/> )} 
+        {[...demoData,...demoData,...demoData].map(nft => (
+          <NftCard 
+            className={styles.nftItem} 
+            moralisApiResult={nft} 
+            chain={currentChain?.name || ''} 
+            width="360px"
+          />
+        ))} 
       </div>
     </div>
   </Layout>)
