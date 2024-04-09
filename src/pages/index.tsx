@@ -3,6 +3,7 @@ import styles from "@/styles/Home.module.scss";
 import Layout from "@/components/Layout";
 import Image from "next/image";
 import { Button } from "@web3uikit/core";
+import Link from "next/link";
 
 export default function Home() {
 	return (
@@ -30,7 +31,9 @@ export default function Home() {
 									Connect a MetaMask wallet or watch any Ethereum address.
 								</p>
 								<div className={styles.action}>
-									<Button text="Watch an Address" type="button" theme="outline" size="large"/>
+									<Link href="/points" className="text-xl font-bold">
+										<Button text="Mint nft" type="button" theme="outline" size="large"/>
+									</Link>
 									<Button text="Connect Wallet" type="button" theme="moneyPrimary" size="large"/>
 								</div>
 						</div>

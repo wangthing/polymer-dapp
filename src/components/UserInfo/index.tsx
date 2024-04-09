@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { type BaseError, useWaitForTransactionReceipt, useWriteContract, useWatchContractEvent, useConfig, useAccount } from 'wagmi'
-import { watchContractEvent,  http, readContract } from '@wagmi/core'
+import { watchContractEvent, readContract } from '@wagmi/core'
 
 // import { WriteContractVariables } from "wagmi/query";
 import { LuckyWheel } from '@lucky-canvas/react'
@@ -10,7 +10,8 @@ import { Button, useNotification } from '@web3uikit/core';
 import abi from '@/abis/points.json'
 import { WriteContractReturnType } from "viem";
 
-const contract_address = '0x52Ed35b6d22096f8BDe36AB15d41b7626d20a2fe'
+const contract_address = '0xb9c85639C4599c497861A99BC0fb68C0EA4D05ed'
+const nft_contract_address = '0x4bBBd95EDb8fFBb0da4e9d4A930d09fd102A9A27'
 export function UserInfo() {
   const myLucky = useRef()
   const account = useAccount()
@@ -67,28 +68,53 @@ export function UserInfo() {
     }, 2500)
   }
 
-  const canMint = async () => {
+  const approve = async () => {
+    const approveAmount = Number.MAX_VALUE
+    const res = await (writeContract as any)({
+      address: contract_address,
+      abi,
+      functionName: 'approve',
+      args: [contract_address, approveAmount]
+    },
+    {
+      onSuccess: (data: WriteContractReturnType, variables: any, context: any) => {
+        // dispatch({
+        //   type: 'info',
+        //   message: "minting in progress",
+        //   title: 'New Notification',
+        //   position: 'topR',
+        // })
+        console.log(data, 'approve success')
+      },
+      onError: (err: WriteContractReturnType) => {
+        console.log(err, 'approve failed')
+      },
+    })
+
+    console.log('approve res', res)
+  }
+
+  const checkAllowance = async () => {
     const res = await (readContract as any)(config, {
       address: contract_address,
-      abi: [{
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "recipient",
-            "type": "address"
-          }
-        ],
-        "name": "_canFunMint",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      }],
+      abi,
+      functionName: 'allowance',
+      args: [account.address, contract_address]
+    })
+    const allowance = parseInt(res)
+    console.log('allowance>>>', res)
+    // 
+    if(allowance === 0) {
+      return await approve()
+    }
+    return res
+  }
+
+  const canMint = async () => {
+    const allowance = await checkAllowance ();
+    const res = await (readContract as any)(config, {
+      address: contract_address,
+      abi,
       functionName: '_canFunMint',
       args: [account.address]
     })
@@ -145,6 +171,35 @@ export function UserInfo() {
       }
     )
   }
+
+  const mintNft = async () => {
+
+  }
+
+  const randomMintNft = async () => {
+    const res = await (writeContract as any)({
+      address: nft_contract_address,
+      abi,
+      functionName: 'randomMint',
+      args: [account.address]
+    },
+    {
+      onSuccess: (data: WriteContractReturnType, variables: any, context: any) => {
+        dispatch({
+          type: 'info',
+          message: "minting in progress",
+          title: 'New Notification',
+          position: 'topR',
+        })
+        console.log(data, 'randomMintNft')
+      },
+      onError: (err: WriteContractReturnType) => {
+        console.log(err, 'randomMintNft failed')
+      },
+    })
+    console.log(res, 'randomMintNft res')
+  }
+
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
       hash,
@@ -179,9 +234,10 @@ export function UserInfo() {
     <div>
         <Button
           disabled={isPending}
-          type="submit"
+          type="button"
+          theme="primary"
           onClick={submit}
-          text={isPending ? 'Confirming...' : 'Mint'}
+          text={isPending ? 'Confirming...' : 'funMint'}
         >
         </Button>
         {hash && <div>Transaction Hash: {hash}</div>}
@@ -190,7 +246,24 @@ export function UserInfo() {
         {error && (
           <div>Error: {(error as BaseError).details || error.stack}</div>
         )}
-      <LuckyWheel width="300px" height="300px"
+
+        <Button
+          disabled={isPending}
+          type="button"
+          theme="primary"
+          onClick={mintNft}
+          text={isPending ? 'Confirming...' : 'nft Mint'}
+        >
+        </Button>
+        <Button
+          disabled={isPending}
+          type="button"
+          theme="primary"
+          onClick={randomMintNft}
+          text={isPending ? 'Confirming...' : 'random nft Mint'}
+        >
+        </Button>
+      {/* <LuckyWheel width="300px" height="300px"
         ref={myLucky} 
         blocks={blocks}
         prizes={prizes}
@@ -202,15 +275,7 @@ export function UserInfo() {
             title: 'New Notification',
             position: 'topR',
           })
-        }}
-      />
-      <p onClick={() => { // 点击抽奖按钮会触发star回调
-          myLucky?.current.play()
-          setTimeout(() => {
-            const index = Math.random() * 6 >> 0
-            myLucky?.current.stop(index)
-          }, 2500)
-        }}>Start</p>
+        }} */}
     </div>
   )
 }
