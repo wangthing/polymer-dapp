@@ -8,17 +8,25 @@ import { watchContractEvent, readContract } from '@wagmi/core'
 import { LuckyWheel } from '@lucky-canvas/react'
 import { Button, LinkTo, useNotification } from '@web3uikit/core';
 import abi from '@/abis/points.json'
-import nftAbi from '@/abis/nft.json'
 import { WriteContractReturnType } from "viem";
 import { pts_contract_address as contract_address, nft_contract_address, pointList } from "@/const";
 import styles from './index.module.scss'
-import { useBalanceOfPoint } from "@/hooks/index";
+import { useBalanceOfPoint, useCheckChain } from "@/hooks/index";
+import {
+	optimismSepolia,
+} from "wagmi/chains";
 
 export function UserInfo() {
   const myLucky = useRef()
   const account = useAccount()
   const dispatch = useNotification();
-  const balance = useBalanceOfPoint(account.address)
+  const { balance, fetchBalance } = useBalanceOfPoint(account.address)
+  const { checkChain } = useCheckChain(optimismSepolia.id)
+	
+	useEffect(() => {
+		checkChain()
+	}, [])
+  useCheckChain(optimismSepolia.id)
   const {
     data: hash,
     error,
@@ -56,6 +64,7 @@ export function UserInfo() {
           const { args } = logs[0]
           const res = parseInt(args?.amount)
           startWheel(res)
+          fetchBalance()
         }
         unwatch()
       },
@@ -115,7 +124,6 @@ export function UserInfo() {
   }
 
   const canMint = async () => {
-    const allowance = await checkAllowance ();
     const res = await (readContract as any)(config, {
       address: contract_address,
       abi,
@@ -176,54 +184,6 @@ export function UserInfo() {
     )
   }
 
-  const mintNft = async () => {
-    const res = await (writeContract as any)({
-      address: nft_contract_address,
-      abi: nftAbi,
-      functionName: 'mintNFT1',
-      args: [account.address]
-    },
-    {
-      onSuccess: (data: WriteContractReturnType) => {
-        dispatch({
-          type: 'info',
-          message: "minting in progress",
-          title: 'New Notification',
-          position: 'topR',
-        })
-        console.log(data, 'mintNft1')
-      },
-      onError: (err: WriteContractReturnType) => {
-        console.log(err, 'mintNft1 failed')
-      },
-    })
-    console.log(res, 'mintNft1 res')
-  }
-
-  const randomMintNft = async () => {
-    const res = await (writeContract as any)({
-      address: nft_contract_address,
-      abi,
-      functionName: 'randomMint',
-      args: [account.address]
-    },
-    {
-      onSuccess: (data: WriteContractReturnType, variables: any, context: any) => {
-        dispatch({
-          type: 'info',
-          message: "minting in progress",
-          title: 'New Notification',
-          position: 'topR',
-        })
-        console.log(data, 'randomMintNft')
-      },
-      onError: (err: WriteContractReturnType) => {
-        console.log(err, 'randomMintNft failed')
-      },
-    })
-    console.log(res, 'randomMintNft res')
-  }
-
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
       hash,
@@ -259,7 +219,7 @@ export function UserInfo() {
               position: 'topR',
             })
           }}
-          onStart={startMint}
+          // onStart={startMint}
         />
         <div className={styles.actions}>
           <Button
@@ -276,7 +236,7 @@ export function UserInfo() {
             // icon={<SvgYoutube fill="#0B72C4" fontSize={18}/>}
             iconLayout="none"
             // onClick={function noRefCheck(){}}
-            text="Moralis Youtube"
+            text="Learn More"
             type="external"
           />
 
