@@ -6,19 +6,19 @@ export const decimal = 10**18
 export const NftMintList = [
   {
     name: 'NFT1',
-    id: 'NFT1',
+    id: '0',
     url: '',
   },{
     name: 'NFT2',
-    id: 'NFT2',
+    id: '1',
     url: '',
   },{
     name: 'NFT3',
-    id: 'NFT3',
+    id: '2',
     url: '',
   },{
     name: 'NFT4',
-    id: 'NFT4',
+    id: '3',
     url: '',
   }
 ]
