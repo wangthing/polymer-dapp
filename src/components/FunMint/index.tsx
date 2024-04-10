@@ -6,17 +6,19 @@ import { watchContractEvent, readContract } from '@wagmi/core'
 
 // import { WriteContractVariables } from "wagmi/query";
 import { LuckyWheel } from '@lucky-canvas/react'
-import { Button, useNotification } from '@web3uikit/core';
+import { Button, LinkTo, useNotification } from '@web3uikit/core';
 import abi from '@/abis/points.json'
 import nftAbi from '@/abis/nft.json'
 import { WriteContractReturnType } from "viem";
 import { pts_contract_address as contract_address, nft_contract_address, pointList } from "@/const";
 import styles from './index.module.scss'
+import { useBalanceOfPoint } from "@/hooks/index";
 
 export function UserInfo() {
   const myLucky = useRef()
   const account = useAccount()
   const dispatch = useNotification();
+  const balance = useBalanceOfPoint(account.address)
   const {
     data: hash,
     error,
@@ -238,11 +240,12 @@ export function UserInfo() {
     }
   ])
   const [blocks] = useState([
-    { padding: '10px', background: '#869cfa' }
+    { padding: '6px', background: '#869cfa' }
   ])
 
   return (
     <div className={styles.funMint}>
+        <p>current points: {balance}</p>
         <LuckyWheel width="300px" height="300px"
           ref={myLucky} 
           blocks={blocks}
@@ -258,14 +261,27 @@ export function UserInfo() {
           }}
           onStart={startMint}
         />
-        <Button
-          disabled={isPending}
-          type="button"
-          theme="primary"
-          onClick={startMint}
-          text={isPending ? 'Confirming...' : 'funMint'}
-          style={{marginTop: '32px'}}
-        />
+        <div className={styles.actions}>
+          <Button
+            disabled={isPending}
+            type="button"
+            theme="primary"
+            onClick={startMint}
+            text={isPending ? 'Confirming...' : 'Spin the Wheel'}
+            style={{ background: 'rgb(86, 185, 202)', marginRight: '8px', borderWidth: '0px'}}
+            size="large"
+          />
+          <LinkTo
+            address="https://www.youtube.com"
+            // icon={<SvgYoutube fill="#0B72C4" fontSize={18}/>}
+            iconLayout="none"
+            // onClick={function noRefCheck(){}}
+            text="Moralis Youtube"
+            type="external"
+          />
+
+        </div>
+
         {/* {hash && <div>Transaction Hash: {hash}</div>}
         {isConfirming && <div>Waiting for confirmation...</div>}
         {isConfirmed && <div>Transaction confirmed. data: {hash}</div>}
