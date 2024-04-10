@@ -1,7 +1,9 @@
-import { NftCard } from '@web3uikit/core';
+import { Button, NftCard } from '@web3uikit/core';
 import useCurrentChain from '@/hooks/useCurrentChain';
 import styles from './index.module.scss'
 import Layout from "@/components/Layout";
+import Link from 'next/link';
+import Image from 'next/image';
 
 const demoData = [{
   "token_address": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
@@ -81,6 +83,19 @@ export default function NFT() {
   return (
   <Layout>
     <div className={styles.nftContainer}>
+      <div className={styles.topInfo}>
+        <div className={styles.info}>
+          <h1 className={styles.title}>Purchase a Mystery NFT which could be any one of the Polymer Phase 2 NFT Types</h1>
+          <div className={styles.action}>
+            <Link href="/points" className="text-xl font-bold">
+              <Button text="Explore" type="button" theme="moneyPrimary" size="large"/>
+            </Link>
+            <Button text="Purchase random NFT" type="button" theme="outline" size="large"/>
+          </div>
+        </div>
+        <Image src="/images/nftDemo.jpg" alt='' width={330} height={330}/>
+      </div>
+      <h2 className={styles.buyNftTitle}>Polymer Phase 2 NFTS</h2>
       <div className={styles.nftList}>
         {[...demoData,...demoData,...demoData].map(nft => (
           <NftCard 
