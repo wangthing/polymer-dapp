@@ -1,6 +1,27 @@
 export const pts_contract_address = '0xECd3AF486903Ea6c5BdaD2A2eb0567d718E147F1'
-export const nft_contract_address = '0x4D4f841A6C4829D843924e5EC04d88320b5Fd2Ce'
+export const nft_contract_address = '0xdBc26eA8ca09aDC45a1bd467E53B3447F1B7dc0d'
+export const base_nft_contract_address = '0x7E45E7dE632E503843F1889cb49708B2258fb10f'
 export const decimal = 10**18
+
+export const NftMintList = [
+  {
+    name: 'NFT1',
+    id: 'NFT1',
+    url: '',
+  },{
+    name: 'NFT2',
+    id: 'NFT2',
+    url: '',
+  },{
+    name: 'NFT3',
+    id: 'NFT3',
+    url: '',
+  },{
+    name: 'NFT4',
+    id: 'NFT4',
+    url: '',
+  }
+]
 
 export const pointList = [
   { background: '#e9e8fe', fonts: [{ text: '1', top: '20px' }], id: 1 },

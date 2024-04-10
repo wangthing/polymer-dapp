@@ -339,14 +339,9 @@
         "internalType": "uint64",
         "name": "timeoutSeconds",
         "type": "uint64"
-      },
-      {
-        "internalType": "enum PolymerERC721UC.NFTType",
-        "name": "tokenType",
-        "type": "uint8"
       }
     ],
-    "name": "crossChainMint",
+    "name": "crossChainRandomMint",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1158,5 +1153,35 @@
   {
     "stateMutability": "payable",
     "type": "receive"
+  },{
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserOwnedTokenIds",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },{
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "burn",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ]

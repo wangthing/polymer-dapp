@@ -2,44 +2,51 @@ import React from "react"
 import styles from './index.module.scss'
 import { Button } from "@web3uikit/core"
 import Image from "next/image"
-import { Gift, Heart} from '@web3uikit/icons'
+import { Gift, Btc} from '@web3uikit/icons'
 import classNames from "classnames"
 
 interface IProps {
     className?: string
-    handleNftMint?: () => void
+    name: string
+    showBurn?: boolean
+    url?: string
+    handleNftMint?: () => void,
+    btnText2: string
 }
 const NftCardForSale = (props: IProps) => {
-    const { className = '', handleNftMint} = props
+    const { className = '', handleNftMint, name, showBurn = false, url = '/images/nftDemo.jpg', btnText2 } = props
     return (
         <div className={classNames(styles.nftCardForSale, className)}>
             <div className={styles.nftInfo}>
                 <div className={styles.image} >
-                    <Image src="/images/nftDemo.jpg" alt="" width={300} height={380} style={{height: '100%'}}/>
+                    <img className={styles.image} src={url} alt=""  style={{ width: '320px', height: '100%'}} />
                 </div>
                 <div className={styles.info}>
                     <div className={styles.name}>
-                        <span>NFT1</span>
+                        <span>{name}</span>
                         <Gift fontSize='24px'/>
                     </div>
                     <div className={styles.like}>
-                        <Heart fontSize='20px'/>
+                        <Btc fontSize='20px' style={{ marginRight: '8px' }}/>
                         <span>232</span>
                     </div>
                 </div>
             </div>
-            <div>
+            <div className={styles.action}>
+                {
+                    showBurn && 
+                    <Button 
+                        text="Burn" 
+                        type="button" 
+                        theme="secondary" 
+                        size="large" 
+                        onClick={() => {
+                            handleNftMint?.()
+                        }}
+                    />
+                }
                 <Button 
-                    text="Burn" 
-                    type="button" 
-                    theme="colored" 
-                    size="large" 
-                    onClick={() => {
-                        handleNftMint?.()
-                    }}
-                />
-                <Button 
-                    text="Buy" 
+                    text={btnText2} 
                     type="button" 
                     theme="primary" 
                     size="large" 

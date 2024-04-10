@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import Head from "next/head";
 import styles from "@/styles/Home.module.scss";
 import FunMint from "@/components/FunMint";
 import Layout from "@/components/Layout";
 
 export default function Home() {
+
 	return (
 		<>
 			<Head>
