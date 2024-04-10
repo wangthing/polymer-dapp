@@ -105,8 +105,8 @@ export default function NFT() {
     const res = await (writeContract as any)({
       address: nft_contract_address,
       abi: nftAbi,
-      functionName: funcName,
-      args: [account.address]
+      functionName: 'crossChainMint',
+      args: [base_nft_contract_address, '0x6368616e6e656c2d313000000000000000000000000000000000000000000000', 3600, nftId, false]
     },
     {
       onSuccess: (data: WriteContractReturnType) => {
