@@ -46,6 +46,9 @@ const Navbar = () => {
           <Link href="/leader-board" className="text-xl font-bold">
             <p>Leaderboard</p>
           </Link>
+		  <Link href="/counter" className="text-xl font-bold">
+            <p>Counter</p>
+          </Link>
 					
 					<div className={styles.buttons}>
 						{/* <div

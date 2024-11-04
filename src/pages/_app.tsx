@@ -9,7 +9,8 @@ import {
 	baseSepolia,
 	optimismSepolia,
 	base,
-	optimism
+	optimism,
+	sepolia
 } from "wagmi/chains";
 import { SiweMessage } from 'siwe'
 import { createSIWEConfig } from '@web3modal/siwe'
@@ -83,7 +84,8 @@ const chains = [
 	base,
 	optimism,
 	baseSepolia,
-	optimismSepolia
+	optimismSepolia,
+	sepolia
 ];
 
 // 1. Get projectID at https://cloud.walletconnect.com

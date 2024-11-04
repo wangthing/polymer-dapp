@@ -1,6 +1,7 @@
 export const pts_contract_address = '0xECd3AF486903Ea6c5BdaD2A2eb0567d718E147F1'
 export const nft_contract_address = '0xdBc26eA8ca09aDC45a1bd467E53B3447F1B7dc0d'
 export const base_nft_contract_address = '0x7E45E7dE632E503843F1889cb49708B2258fb10f'
+export const sepolia_counter_address = '0xa1A528aD33017276ea65a144705F0e4e739198Ca'
 export const decimal = 10**18
 
 export const NftMintList = [
