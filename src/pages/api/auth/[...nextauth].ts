@@ -16,7 +16,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 // }
 const nextAuthSecret = process.env.NEXTAUTH_SECRET
 if (!nextAuthSecret) {
-  throw new Error('NEXTAUTH_SECRET is not set')
+  // throw new Error('NEXTAUTH_SECRET is not set')
 }
 // Get your projectId on https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID

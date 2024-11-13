@@ -1,16 +1,16 @@
 import Layout from "@/components/Layout"
 import styles from './index.module.scss'
 import { Button, Select } from "@web3uikit/core"
-import { sepolia_counter_address, fuji_test_counter_address,  op_sepolia_counter_address_omni, sepolia_counter_address_omni} from "@/const"
+import { op_sepolia_counter_address_omni, base_sepolia_counter_address_omni} from "@/const"
 import { useEffect, useState } from 'react';
 import { useCheckChain } from '@/hooks/index';
 import { readContract } from "@wagmi/core";
 import omniCounterAbi from '@/abis/omniCounter.json';
 import { useConfig, useWriteContract } from "wagmi";
+
 import {
-    avalancheFuji,
-    bscTestnet,
-    sepolia
+    baseSepolia,
+    optimismSepolia,
 } from "wagmi/chains";
 import { formatUnits, solidityPacked } from "ethers";
 
@@ -18,7 +18,7 @@ import { formatUnits, solidityPacked } from "ethers";
 const adapterParams = solidityPacked(["uint16", "uint256"], [1, 200000]) // default adapterParams example
 const LeaderBoard = () => {
     const config = useConfig()
-    const { checkChain: checkSepoliaChain } = useCheckChain(sepolia.id)
+    const { checkChain: checkSepoliaChain } = useCheckChain(optimismSepolia.id)
     const [currentCount, setCurrentCount] = useState(0)
     const [estimateFee, setEstimateFee] = useState('')
     useEffect(() => {
@@ -36,10 +36,10 @@ const LeaderBoard = () => {
     const getCurrentCount = async () => {
         try {
             const res = await (readContract as any)(config, {
-                address: fuji_test_counter_address,
+                address: base_sepolia_counter_address_omni,
                 abi: omniCounterAbi,
                 functionName: 'counter',
-                chainId: avalancheFuji.id
+                chainId: baseSepolia.id
               })
               setCurrentCount(parseInt(res))
         } catch (error) {
@@ -50,11 +50,11 @@ const LeaderBoard = () => {
     const getEstimateFee = async () => {
         try {
             const res = await (readContract as any)(config, {
-                address: fuji_test_counter_address,
+                address: base_sepolia_counter_address_omni,
                 abi: omniCounterAbi,
                 functionName: 'estimateFee',
-                args: [10106, false, adapterParams],
-                chainId: avalancheFuji.id
+                args: [10245, false, adapterParams],
+                chainId: baseSepolia.id
               })
               setEstimateFee(res[0])
               return res[0]
@@ -66,21 +66,20 @@ const LeaderBoard = () => {
     const increment = async () => {
         try {
             const fee = await getEstimateFee()
-            console.log(fee, 'res>>>>>')
-            
+
             const res = await (writeContract as any)({
-                address: fuji_test_counter_address,
+                address: op_sepolia_counter_address_omni,
                 abi: omniCounterAbi,
                 functionName: 'incrementCounter',
-                args: [10106],
-                value: fee
+                args: [10245],
+                value: '82467958234688' //can't get the right estimateFee
               })
-            console.log(res, 'res>>>>>')
+            console.log(res, fee,  'res>>>>>')
         } catch (error) {
             console.log(error)
         }
     }
-    console.log(typeof estimateFee, 'estimateFee')
+    console.log(estimateFee, 'estimateFee')
     return (
         <Layout>
             <div className={styles.counterWrapper}>
@@ -91,8 +90,8 @@ const LeaderBoard = () => {
                     defaultOptionIndex={0}
                     options={[
                         {
-                            id: 'Layzero',
-                            label: 'Layzero',
+                            id: 'LayerzeroV1',
+                            label: 'LayerzeroV1',
                         },
                         {
                             id: 'Polymer',
@@ -107,7 +106,7 @@ const LeaderBoard = () => {
                 />
                 <Button text="add counter" type="button" theme="outline" size="large" onClick={increment}/>
                 <p>current counter: {currentCount}</p>
-                <p>Estimate Fee: {formatUnits(estimateFee, 18)}</p>
+                <p>Estimate Fee: {estimateFee ? `${formatUnits(estimateFee, 18)} eth` : ''}</p>
             </div>
         </Layout>
     )
