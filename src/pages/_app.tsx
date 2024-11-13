@@ -10,7 +10,9 @@ import {
 	optimismSepolia,
 	base,
 	optimism,
-	sepolia
+	sepolia,
+	avalancheFuji,
+	bscTestnet
 } from "wagmi/chains";
 import { SiweMessage } from 'siwe'
 import { createSIWEConfig } from '@web3modal/siwe'
@@ -85,7 +87,9 @@ const chains = [
 	optimism,
 	baseSepolia,
 	optimismSepolia,
-	sepolia
+	sepolia,
+	avalancheFuji,
+	bscTestnet
 ];
 
 // 1. Get projectID at https://cloud.walletconnect.com
