@@ -83,6 +83,7 @@ const LeaderBoard = () => {
     return (
         <Layout>
             <div className={styles.counterWrapper}>
+            <h2>From Optimistic-Sepolia To Base-Sepolia</h2>
             <Select
                     onBlurTraditional={function noRefCheck() { } }
                     onChange={function noRefCheck() { } }
@@ -106,7 +107,7 @@ const LeaderBoard = () => {
                 />
                 <Button text="add counter" type="button" theme="outline" size="large" onClick={increment}/>
                 <p>current counter: {currentCount}</p>
-                <p>Estimate Fee: {estimateFee ? `${formatUnits(estimateFee, 18)} eth` : ''}</p>
+                <p>Estimate bridge Fee: {estimateFee ? `${formatUnits(estimateFee, 18)} eth` : ''}</p>
             </div>
         </Layout>
     )
